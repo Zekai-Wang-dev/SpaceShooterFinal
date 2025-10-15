@@ -325,7 +325,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1892512553}
   - component: {fileID: 1892512552}
-  - component: {fileID: 1892512554}
   - component: {fileID: 1892512555}
   m_Layer: 0
   m_Name: Enemy
@@ -404,23 +403,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1892512554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1892512551}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ff223e91549fb14da85e92e8643fa5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  points: []
-  enemyTransform: {fileID: 1892512553}
-  plrTransform: {fileID: 675448411}
-  direction: {x: 0, y: 0, z: 0}
-  range: 5
 --- !u!114 &1892512555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,8 +415,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8515025ecc6d96a47a45e4ed452cfc4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  size: []
+  points: []
   enemyTransform: {fileID: 1892512553}
   plrTransform: {fileID: 675448411}
+  direction: {x: 0, y: 0, z: 0}
+  range: 0
+  blockedL: 0
+  blockedR: 0
+  blockedUp: 0
+  blockedDown: 0
   speed: 2
   rotateSpeed: 400
   radarRange: 5
