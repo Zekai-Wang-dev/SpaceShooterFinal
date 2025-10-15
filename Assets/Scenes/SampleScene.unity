@@ -201,7 +201,7 @@ Transform:
   m_GameObject: {fileID: 675448409}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.93, y: 0, z: 0}
+  m_LocalPosition: {x: -4.93, y: -1.36, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -397,7 +397,7 @@ Transform:
   m_GameObject: {fileID: 1892512551}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.88, y: 0, z: 0}
+  m_LocalPosition: {x: 3.88, y: -1.24, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -421,15 +421,20 @@ MonoBehaviour:
   plrTransform: {fileID: 675448411}
   direction: {x: 0, y: 0, z: 0}
   range: 0
+  blockedTL: 0
+  blockedTR: 0
+  blockedBL: 0
+  blockedBR: 0
   blockedL: 0
   blockedR: 0
   blockedUp: 0
   blockedDown: 0
   speed: 2
   rotateSpeed: 400
-  radarRange: 5
+  radarRange: 50
   velocity: {x: 0, y: 0, z: 0}
   lookDirection: {x: 0, y: 0, z: 0}
+  collisionRange: 5
   detected: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

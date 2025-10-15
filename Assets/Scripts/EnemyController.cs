@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 
 public class EnemyController : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class EnemyController : MonoBehaviour
     public Vector3 velocity;
     public Vector3 lookDirection;
 
+    public float collisionRange = 5f; 
+
     public bool detected;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -45,7 +48,7 @@ public class EnemyController : MonoBehaviour
     {
 
         fieldOfView();
-        //followPlayer();
+        followPlayer();
         turnToPlayer();
         FindPath();
         enemyTransform.position += velocity;
@@ -55,7 +58,6 @@ public class EnemyController : MonoBehaviour
     public void FindPath()
     {
 
-        string playerLocation = "nil";
         string enemyLocation = "nil";
 
         direction = (plrTransform.position - enemyTransform.position).normalized;
@@ -68,91 +70,18 @@ public class EnemyController : MonoBehaviour
             Vector3 topRight = new Vector3(bottomRight.x, bottomLeft.y + size[i].y, 0);
             Vector3 topLeft = new Vector3(bottomLeft.x, topRight.y, 0);
 
+            float distanceBL = (bottomLeft - enemyTransform.position).magnitude;
+            float distanceBR = (bottomRight - enemyTransform.position).magnitude;
+            float distanceTL = (topRight - enemyTransform.position).magnitude;
+            float distanceTR = (topLeft - enemyTransform.position).magnitude;
+
+
             Debug.DrawLine(bottomLeft, bottomRight);
             Debug.DrawLine(bottomRight, topRight);
             Debug.DrawLine(topRight, topLeft);
             Debug.DrawLine(topLeft, bottomLeft);
 
-            if (plrTransform.position.x < bottomLeft.x && plrTransform.position.y < bottomLeft.y)
-            {
-
-                playerLocation = "bottomLeft";
-
-            }
-            else if (plrTransform.position.x > bottomRight.x && plrTransform.position.y < bottomRight.y)
-            {
-
-                playerLocation = "bottomRight";
-
-            }
-            else if (plrTransform.position.x > topRight.x && plrTransform.position.y > topRight.y)
-            {
-
-                playerLocation = "topRight";
-
-            }
-            else if (plrTransform.position.x < topLeft.x && plrTransform.position.y > topLeft.y)
-            {
-
-                playerLocation = "topLeft";
-
-            }
-            else if (plrTransform.position.x > bottomRight.x && plrTransform.position.y < topRight.y && plrTransform.position.y > bottomRight.y)
-            {
-
-                playerLocation = "right";
-
-            }
-            else if (plrTransform.position.x < bottomLeft.x && plrTransform.position.y < topLeft.y && plrTransform.position.y > bottomLeft.y)
-            {
-
-                playerLocation = "left";
-
-            }
-            else if (plrTransform.position.y > topLeft.y && plrTransform.position.x < topRight.x && plrTransform.position.x > topLeft.x)
-            {
-
-                playerLocation = "up";
-
-            }
-            else if (plrTransform.position.y < bottomLeft.y && plrTransform.position.x < bottomRight.x && plrTransform.position.x > bottomLeft.x)
-            {
-
-                playerLocation = "down";
-
-            }
-            else
-            {
-
-                playerLocation = "inside";
-
-            }
-
-            if (enemyTransform.position.x < bottomLeft.x && enemyTransform.position.y < bottomLeft.y)
-            {
-
-                enemyLocation = "bottomLeft";
-
-            }
-            else if (enemyTransform.position.x > bottomRight.x && enemyTransform.position.y < bottomRight.y)
-            {
-
-                enemyLocation = "bottomRight";
-
-            }
-            else if (enemyTransform.position.x > topRight.x && enemyTransform.position.y > topRight.y)
-            {
-
-                enemyLocation = "topRight";
-
-            }
-            else if (enemyTransform.position.x < topLeft.x && enemyTransform.position.y > topLeft.y)
-            {
-
-                enemyLocation = "topLeft";
-
-            }
-            else if (enemyTransform.position.x > bottomRight.x && enemyTransform.position.y < topRight.y && enemyTransform.position.y > bottomRight.y)
+            if (enemyTransform.position.x > bottomRight.x && enemyTransform.position.y < topRight.y && enemyTransform.position.y > bottomRight.y)
             {
 
                 enemyLocation = "right";
@@ -183,272 +112,35 @@ public class EnemyController : MonoBehaviour
 
             }
 
-            if (playerLocation != "inside" || enemyLocation != "inside")
+            if (enemyLocation == "left" && velocity.x > 0 && (distanceTL < collisionRange || distanceBL < collisionRange))
             {
 
-                if (playerLocation == "bottomLeft" && (enemyLocation == "topRight" || enemyLocation == "right" || enemyLocation == "up"))
-                {
-
-                    blockedTL = true;
-                    blockedTR = false;
-                    blockedBL = false;
-                    blockedBR = false;
-                    blockedL = false;
-                    blockedR = false;
-                    blockedUp = false;
-                    blockedDown = false;
-
-                }
-                else if (playerLocation == "bottomRight" && (enemyLocation == "topLeft" || enemyLocation == "left" || enemyLocation == "up"))
-                {
-
-                    blockedTR = true;
-                    blockedTL = false;
-                    blockedBL = false;
-                    blockedBR = false;
-                    blockedL = false;
-                    blockedR = false;
-                    blockedUp = false;
-                    blockedDown = false;
-
-                }
-                else if (playerLocation == "topRight" && (enemyLocation == "bottomLeft" || enemyLocation == "left" || enemyLocation == "down"))
-                {
-
-                    blockedBR = true;
-                    blockedTL = false;
-                    blockedBL = false;
-                    blockedTR = false;
-                    blockedL = false;
-                    blockedR = false;
-                    blockedUp = false;
-                    blockedDown = false;
-
-                }
-                else if (playerLocation == "topLeft" && (enemyLocation == "bottomRight" || enemyLocation == "right" || enemyLocation == "down"))
-                {
-
-                    blockedBL = true;
-                    blockedTL = false;
-                    blockedBR = false;
-                    blockedTR = false;
-                    blockedL = false;
-                    blockedR = false;
-                    blockedUp = false;
-                    blockedDown = false;
-
-                }
-                else if (playerLocation == "right" && (enemyLocation == "left" || enemyLocation == "inside"))
-                {
-
-                    blockedR = true;
-                    blockedTL = false;
-                    blockedBR = false;
-                    blockedTR = false;
-                    blockedL = false;
-                    blockedBL = false;
-                    blockedUp = false;
-                    blockedDown = false;
-
-                }
-                else if (playerLocation == "left" && (enemyLocation == "right" || enemyLocation == "inside"))
-                {
-
-                    blockedL = true;
-                    blockedTL = false;
-                    blockedBR = false;
-                    blockedTR = false;
-                    blockedL = false;
-                    blockedBL = false;
-                    blockedUp = false;
-                    blockedDown = false;
-
-                }
-                else if (playerLocation == "up" && (enemyLocation == "down" || enemyLocation == "inside"))
-                {
-
-                    blockedUp = true;
-                    blockedTL = false;
-                    blockedBR = false;
-                    blockedTR = false;
-                    blockedL = false;
-                    blockedBL = false;
-                    blockedR = false;
-                    blockedDown = false;
-
-                }
-                else if (playerLocation == "down" && (enemyLocation == "up" || enemyLocation == "inside"))
-                {
-
-                    blockedDown = true;
-                    blockedTL = false;
-                    blockedBR = false;
-                    blockedTR = false;
-                    blockedL = false;
-                    blockedBL = false;
-                    blockedR = false;
-                    blockedUp = false;
-
-                }
-                else
-                {
-
-                    blockedTL = false;
-                    blockedTR = false;
-                    blockedBL = false;
-                    blockedBR = false;
-                    blockedL = false;
-                    blockedR = false;
-                    blockedUp = false;
-                    blockedDown = false;
-
-                }
-
+                velocity.x = 0;
 
             }
 
-        }
-        velocity = Vector3.zero;
-
-        if (blockedTL)
-        {
-
-            if (direction.x > 0)
+            else if (enemyLocation == "right" && velocity.x < 0 && (distanceTR < collisionRange || distanceBR < collisionRange))
             {
 
-                velocity += Vector3.right * speed * Time.deltaTime;
-
-            }
-            if (direction.y > 0)
-            {
-
-                velocity += Vector3.up * speed * Time.deltaTime;
+                velocity.x = 0;
 
             }
 
-        }
-        else if (blockedTR)
-        {
-
-            if (direction.x < 0)
+            else if (enemyLocation == "down" && velocity.y > 0 && (distanceBL < collisionRange || distanceBR < collisionRange))
             {
 
-                velocity += Vector3.left * speed * Time.deltaTime;
-
-            }
-            if (direction.y > 0)
-            {
-
-                velocity += Vector3.up * speed * Time.deltaTime;
+                velocity.y = 0; 
 
             }
 
-        }
-        else if (blockedBL)
-        {
-
-            if (direction.x > 0)
+            else if (enemyLocation == "up" && velocity.y < 0 && (distanceTL < collisionRange || distanceTR < collisionRange))
             {
 
-                velocity += Vector3.right * speed * Time.deltaTime;
-
-            }
-            if (direction.y < 0)
-            {
-
-                velocity += Vector3.down * speed * Time.deltaTime;
+                velocity.y = 0;
 
             }
 
-        }
-        else if (blockedBR)
-        {
-
-            if (direction.x < 0)
-            {
-
-                velocity += Vector3.left * speed * Time.deltaTime;
-
-            }
-            if (direction.y < 0)
-            {
-
-                velocity += Vector3.down * speed * Time.deltaTime;
-
-            }
-
-        }
-        else if (blockedL)
-        {
-
-            if (direction.x > 0)
-            {
-
-                velocity += Vector3.up * speed * Time.deltaTime;
-
-            }
-
-        }
-        else if (blockedR)
-        {
-
-            if (direction.x < 0)
-            {
-
-                velocity += Vector3.down * speed * Time.deltaTime;
-
-            }
-
-        }
-        else if (blockedUp)
-        {
-
-            if (direction.y < 0)
-            {
-
-                velocity += Vector3.right * speed * Time.deltaTime;
-
-            }
-
-        }
-        else if (blockedDown)
-        {
-
-            if (direction.y > 0)
-            {
-
-                velocity += Vector3.left * speed * Time.deltaTime;
-
-            }
-
-        }
-        else if (!blockedTL && !blockedTR && !blockedBL && !blockedBR && !blockedL && !blockedR && !blockedUp && !blockedDown)
-        {
-
-            if (plrTransform.position.x > enemyTransform.position.x)
-            {
-
-                velocity += Vector3.right * speed * Time.deltaTime;
-
-            }
-            if (plrTransform.position.x < enemyTransform.position.x)
-            {
-
-                velocity += Vector3.left * speed * Time.deltaTime;
-
-            }
-            if (plrTransform.position.y > enemyTransform.position.y)
-            {
-
-                velocity += Vector3.up * speed * Time.deltaTime;
-
-            }
-            if (plrTransform.position.y < enemyTransform.position.y)
-            {
-
-                velocity += Vector3.down * speed * Time.deltaTime;
-
-            }
+            print(enemyLocation);
 
 
         }
